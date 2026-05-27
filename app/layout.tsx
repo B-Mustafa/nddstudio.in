@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, DM_Sans } from "next/font/google";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeProvider from "@/components/ThemeProvider";
 import "../app/globals.css";
 
@@ -51,6 +52,7 @@ export default function RootLayout({
         <ThemeProvider>
           {children}
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
