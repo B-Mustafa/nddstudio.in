@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import ThemeProvider from "@/components/ThemeProvider";
+import SmoothScroll from "@/components/SmoothScroll";
 import "../app/globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
@@ -51,9 +52,11 @@ export default function RootLayout({
       <body className="grain" suppressHydrationWarning>
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
         <ThemeProvider>
+          <SmoothScroll>
           <SpeedInsights/>
            <Analytics/>
           {children}
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

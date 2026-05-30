@@ -7,12 +7,15 @@ import ThemeToggle from "./ThemeToggle";
 
 const links = ["Services", "Work", "Process", "About", "Contact"];
 
+// About is a full page route; everything else is a home anchor
+const linkHref = (link: string) =>
+  link === "About" ? "/about" : `#${link.toLowerCase()}`;
+
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
+  const [menuOpen, setMenuOpen]   = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
-  // Entrance animation on mount
   useEffect(() => {
     gsap.from(navRef.current, {
       y: -64, opacity: 0, duration: 0.7, delay: 0.1, ease: "power3.out",
@@ -50,18 +53,18 @@ export default function Navbar() {
           </div>
         </a>
 
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {links.map((link) => (
             <a
               key={link}
-              href={`#${link.toLowerCase()}`}
+              href={linkHref(link)}
               className="text-[12px] font-dm relative group/link transition-colors duration-200"
               style={{ color: "var(--fg-muted)" }}
               onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "var(--fg-primary)")}
               onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "var(--fg-muted)")}
             >
               {link}
-              {/* underline slide */}
               <span
                 className="absolute -bottom-0.5 left-0 h-px w-0 group-hover/link:w-full transition-all duration-300"
                 style={{ background: "var(--orange)" }}
@@ -83,6 +86,7 @@ export default function Navbar() {
           </a>
         </div>
 
+        {/* Mobile */}
         <div className="md:hidden flex items-center gap-3">
           <ThemeToggle />
           <button
@@ -109,7 +113,7 @@ export default function Navbar() {
           {links.map((link) => (
             <a
               key={link}
-              href={`#${link.toLowerCase()}`}
+              href={linkHref(link)}
               className="text-[14px] transition-colors py-1"
               style={{ color: "var(--fg-muted)" }}
               onClick={() => setMenuOpen(false)}

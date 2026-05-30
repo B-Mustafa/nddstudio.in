@@ -57,26 +57,30 @@ export default function Hero() {
         },
       });
 
-      // Counter animation for stats
+      // Counter animation — gsap.to counts UP from 0 to target
       document.querySelectorAll(".hero-stat-num").forEach((el) => {
         const target = el.getAttribute("data-target");
         if (!target) return;
         const isPercent = target.includes("%");
-        const isX = target.includes("×");
-        const isH = target.includes("h");
-        const isPlus = target.includes("+");
-        const num = parseFloat(target.replace(/[^0-9.]/g, ""));
+        const isX       = target.includes("×");
+        const isH       = target.includes("h");
+        const isPlus    = target.includes("+");
+        const num       = parseFloat(target.replace(/[^0-9.]/g, ""));
 
-        gsap.from({ val: 0 }, {
+        // Immediately show 0 so there's no flash of the real number
+        el.textContent = isPercent ? "0%" : isX ? "0×" : isH ? "0h" : isPlus ? "0+" : "0";
+
+        const counter = { val: 0 };
+        gsap.to(counter, {
           val: num,
           duration: 1.8,
           ease: "power2.out",
           delay: 1.2,
-          onUpdate: function () {
-            const v = Math.round(this.targets()[0].val);
+          onUpdate() {
+            const v = Math.round(counter.val);
             el.textContent = isPercent ? `${v}%`
-              : isX ? `${v}×`
-              : isH ? `${v}h`
+              : isX    ? `${v}×`
+              : isH    ? `${v}h`
               : isPlus ? `${v}+`
               : `${v}`;
           },
