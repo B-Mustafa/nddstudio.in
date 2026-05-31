@@ -7,9 +7,12 @@ import ThemeToggle from "./ThemeToggle";
 
 const links = ["Services", "Work", "Process", "About", "Contact"];
 
-// About is a full page route; everything else is a home anchor
-const linkHref = (link: string) =>
-  link === "About" ? "/about" : `#${link.toLowerCase()}`;
+// Full page routes vs home anchors
+const linkHref = (link: string) => {
+  if (link === "About")    return "/about";
+  if (link === "Services") return "/services";
+  return `#${link.toLowerCase()}`;
+};
 
 export default function Navbar() {
   const [scrolled, setScrolled]   = useState(false);

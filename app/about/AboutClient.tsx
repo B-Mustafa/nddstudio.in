@@ -158,13 +158,21 @@ export default function AboutClient() {
         scrollTrigger: { trigger: ".mission-section", start: "top 78%", once: true },
       });
 
-      // ── Values stagger
-      gsap.from(".value-card", {
-        opacity: 0, y: 40, scale: 0.96,
-        stagger: 0.1,
-        duration: 0.65,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".values-grid", start: "top 82%", once: true },
+      // ── Values stagger — set hidden first, animate in when section enters
+      gsap.set(".value-card", { opacity: 0, y: 40, scale: 0.96 });
+      ScrollTrigger.create({
+        trigger: ".values-grid",
+        start: "top bottom",
+        once: true,
+        invalidateOnRefresh: true,
+        onEnter: () => {
+          gsap.to(".value-card", {
+            opacity: 1, y: 0, scale: 1,
+            stagger: 0.1,
+            duration: 0.65,
+            ease: "power3.out",
+          });
+        },
       });
 
       // ── Timeline items
@@ -183,13 +191,21 @@ export default function AboutClient() {
         scrollTrigger: { trigger: ".timeline-section", start: "top 80%", once: true },
       });
 
-      // ── Tech stack chips
-      gsap.from(".tech-chip", {
-        opacity: 0, scale: 0.85,
-        stagger: 0.05,
-        duration: 0.4,
-        ease: "back.out(2)",
-        scrollTrigger: { trigger: ".tech-section", start: "top 84%", once: true },
+      // ── Tech stack chips — set hidden first, animate in when section enters
+      gsap.set(".tech-chip", { opacity: 0, scale: 0.85 });
+      ScrollTrigger.create({
+        trigger: ".tech-section",
+        start: "top bottom",
+        once: true,
+        invalidateOnRefresh: true,
+        onEnter: () => {
+          gsap.to(".tech-chip", {
+            opacity: 1, scale: 1,
+            stagger: 0.05,
+            duration: 0.4,
+            ease: "back.out(2)",
+          });
+        },
       });
 
       // ── Services marquee — horizontal infinite scroll
@@ -206,6 +222,9 @@ export default function AboutClient() {
           },
         });
       }
+
+      // Refresh ScrollTrigger after Lenis has set real page height
+      setTimeout(() => ScrollTrigger.refresh(), 300);
 
       // ── CTA bottom
       gsap.from(".about-cta-block", {
