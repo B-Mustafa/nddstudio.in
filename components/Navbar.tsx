@@ -11,6 +11,7 @@ const links = ["Services", "Work", "Process", "About", "Contact"];
 const linkHref = (link: string) => {
   if (link === "About")    return "/about";
   if (link === "Services") return "/services";
+  if (link === "Contact")  return "/contact";
   return `#${link.toLowerCase()}`;
 };
 
@@ -79,7 +80,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
           <a
-            href="#contact"
+            href="/contact"
             className="text-white text-[12px] font-medium px-4 py-2 rounded-lg transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
             style={{ background: "var(--orange)" }}
             onMouseEnter={(e) => ((e.target as HTMLElement).style.background = "var(--orange-hover)")}
@@ -125,7 +126,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="#contact"
+            href="/contact"
             className="text-white text-[13px] font-medium px-4 py-2.5 rounded-lg text-center mt-2"
             style={{ background: "var(--orange)" }}
             onClick={() => setMenuOpen(false)}
