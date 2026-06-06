@@ -5,13 +5,14 @@ import { gsap } from "gsap";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 
-const links = ["Services", "Work", "Process", "About", "Contact"];
+const links = ["Services", "Work", "About", "Contact"];
 
 // Full page routes vs home anchors
 const linkHref = (link: string) => {
   if (link === "About")    return "/about";
   if (link === "Services") return "/services";
   if (link === "Contact")  return "/contact";
+  if (link === "Work")     return "/work";
   return `#${link.toLowerCase()}`;
 };
 

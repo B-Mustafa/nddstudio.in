@@ -121,11 +121,7 @@ export default function Footer() {
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--fg-muted)")}>
                 hello@nddstudio.in
               </a>
-              <a href="tel:+919106579181" className="text-[12px] font-light block transition-colors" style={{ color: "var(--fg-muted)" }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--orange)")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--fg-muted)")}>
-                +91 91065 79181
-              </a>
+
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { Syne, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import ThemeProvider from "@/components/ThemeProvider";
 import SmoothScroll from "@/components/SmoothScroll";
+import Chatbot from "@/components/Chatbot";
 import "../app/globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
@@ -56,6 +57,7 @@ export default function RootLayout({
           <SpeedInsights/>
            <Analytics/>
           {children}
+          <Chatbot />
           </SmoothScroll>
         </ThemeProvider>
       </body>
