@@ -107,6 +107,17 @@ const techStack = [
   { name: "Webflow",    category: "Web" },
 ];
 
+const teamMembers = [
+  {
+    name: "Mohammed Antela",
+    role: "Marketing & Creative Lead",
+    initials: "MA",
+    image: "/team/Mohammed_Antela.jpeg",
+    desc: "Marketing strategist and creative designer specializing in VFX, motion graphics, video editing, and graphic design. Experienced in creating brand identities, product advertisements, social media campaigns, promotional videos, and visual effects. Passionate about combining creativity with marketing to build engaging content, strengthen brand presence, and drive business growth for startups and businesses.",
+    skills: ["VFX", "Motion Graphics", "Video Editing", "Graphic Design", "Brand Identity", "Campaigns"],
+  },
+];
+
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 export default function AboutClient() {
@@ -140,6 +151,12 @@ export default function AboutClient() {
       gsap.from(".founder-text-block", {
         opacity: 0, x: 50, duration: 0.9, ease: "power3.out",
         scrollTrigger: { trigger: ".founder-section", start: "top 80%", once: true },
+      });
+
+      // ── Team section
+      gsap.from(".team-member-card", {
+        opacity: 0, y: 44, duration: 0.75, ease: "power3.out",
+        scrollTrigger: { trigger: ".team-section", start: "top 80%", once: true },
       });
 
       // ── Mission line draw
@@ -351,7 +368,7 @@ export default function AboutClient() {
                   <div className="relative">
                     {/* Big avatar placeholder */}
                     <div
-                      className="w-64 h-64 lg:w-80 lg:h-80 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden"
+                      className="w-64 aspect-[4/5] lg:w-80 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden"
                       style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border)" }}
                     >
                       {/* Initials */}
@@ -361,6 +378,14 @@ export default function AboutClient() {
                       >
                         MB
                       </div>
+                      <img
+                        src="/team/Mustafa_Bhikhapur.jpeg"
+                        alt="Mustafa Bhikhapur"
+                        className="absolute inset-0 w-full h-full object-cover object-[center_28%]"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
                       {/* Orange bottom bar */}
                       <div
                         className="absolute bottom-0 left-0 right-0 h-1"
@@ -423,10 +448,92 @@ export default function AboutClient() {
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.72 19.79 19.79 0 0 1 1.62 4.18 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
                       </svg>
-                      +91 91065 79181
+                      Call us
                     </a>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── TEAM ─────────────────────────────────────────────────────── */}
+          <section className="team-section py-24 lg:py-32" style={{ background: "var(--bg-primary)" }}>
+            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mb-14">
+                <p className="text-[10px] font-medium tracking-[0.16em] uppercase mb-3" style={{ color: "var(--orange)" }}>
+                  Creative leadership
+                </p>
+                <h2 className="font-syne font-extrabold text-[clamp(28px,4vw,48px)] tracking-tight leading-[1] mb-5" style={{ color: "var(--fg-primary)" }}>
+                  Strategy, design,<br />
+                  <span style={{ color: "var(--fg-muted)" }}>and motion that sells.</span>
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {teamMembers.map((member) => (
+                  <div
+                    key={member.name}
+                    className="team-member-card grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8 lg:gap-12 rounded-2xl p-5 lg:p-8"
+                    style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+                  >
+                    <div className="relative">
+                      <div
+                        className="relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center"
+                        style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border)" }}
+                      >
+                        <div
+                          className="font-syne font-extrabold text-[76px] leading-none"
+                          style={{ color: "var(--orange)", opacity: 0.16 }}
+                        >
+                          {member.initials}
+                        </div>
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                        <div
+                          className="absolute bottom-0 left-0 right-0 h-1"
+                          style={{ background: "var(--orange)" }}
+                        />
+                      </div>
+                      <div
+                        className="absolute -bottom-4 right-4 lg:-right-4 px-4 py-2 rounded-xl text-center min-w-[150px]"
+                        style={{ background: "var(--orange)", boxShadow: "0 8px 24px rgba(232,99,10,0.35)" }}
+                      >
+                        <div className="font-syne font-extrabold text-white text-[13px] leading-tight">{member.role}</div>
+                        <div className="text-white/70 text-[10px] font-light mt-0.5">NDD.Studio</div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col justify-center">
+                      <p className="text-[10px] font-medium tracking-[0.16em] uppercase mb-4" style={{ color: "var(--orange)" }}>
+                        {member.role}
+                      </p>
+                      <h3 className="font-syne font-extrabold text-[clamp(26px,3vw,40px)] leading-[1.05] tracking-tight mb-5" style={{ color: "var(--fg-primary)" }}>
+                        {member.name}
+                      </h3>
+                      <p className="text-[14px] font-light leading-relaxed max-w-3xl" style={{ color: "var(--fg-secondary)" }}>
+                        {member.desc}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2.5 mt-8">
+                        {member.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="text-[11px] font-medium px-3 py-1.5 rounded-lg"
+                            style={{ background: "var(--orange-bg)", border: "1px solid var(--orange-border)", color: "var(--orange)" }}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </section>

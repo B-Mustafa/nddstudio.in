@@ -77,12 +77,12 @@ export default function Process() {
             <div key={step.num} className="process-step group cursor-default"
               onMouseEnter={(e) => {
                 gsap.to(e.currentTarget.querySelector(".step-num-text"), {
-                  color: "var(--orange)", opacity: 0.35, duration: 0.3,
+                  color: "var(--orange)", opacity: 0.56, duration: 0.3,
                 });
               }}
               onMouseLeave={(e) => {
                 gsap.to(e.currentTarget.querySelector(".step-num-text"), {
-                  color: "var(--orange)", opacity: 0.12, duration: 0.3,
+                  color: "var(--orange)", opacity: 0.42, duration: 0.3,
                 });
               }}
             >

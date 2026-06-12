@@ -66,14 +66,14 @@ export default function CTASection() {
             href="tel:+919106579181"
             className="border border-white/40 text-white font-light text-[14px] px-7 py-3.5 rounded-lg hover:border-white/80 hover:scale-[1.02] transition-all duration-200"
           >
-            +91 91065 79181
+            Call us
           </a>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 mt-12">
           {[
             { label: "Email",    value: "hello@nddstudio.in",    href: "mailto:hello@nddstudio.in" },
-            { label: "Phone",    value: "+91 91065 79181",        href: "tel:+919106579181" },
+            { label: "Phone",    value: "Book a call",           href: "tel:+919106579181" },
             { label: "Location", value: "Godhra, Gujarat, India", href: "#" },
           ].map((item) => (
             <a key={item.label} href={item.href} className="cta-contact-item text-center hover:opacity-80 transition-opacity">

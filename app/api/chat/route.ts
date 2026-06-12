@@ -88,7 +88,7 @@ const RULES: Rule[] = [
 ];
 
 const FALLBACK =
-  "Good question — I may not have a specific answer for that. For anything detailed, email hello@nddstudio.in or fill our contact form at /contact. Mustafa replies within 24 hours.";
+  "Sorry, I can't answer that right now. Please contact us at hello@nddstudio.in or fill out the form at /contact, and our team will reply back soon.";
 
 function findResponse(message: string): string {
   const lower = message.toLowerCase();
