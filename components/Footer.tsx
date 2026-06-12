@@ -49,7 +49,7 @@ export default function Footer() {
               {[
                 { id: "in", href: "https://linkedin.com" },
                 { id: "tw", href: "https://twitter.com" },
-                { id: "ig", href: "https://instagram.com" },
+                { id: "ig", href: "https://instagram.com/nddstudio.in" },
                 { id: "gh", href: "https://github.com" },
               ].map((s) => (
                 <a
