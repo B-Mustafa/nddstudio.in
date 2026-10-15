@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Logo from "./Logo";
+import HostingerPartner from "./HostingerPartner";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,12 +46,13 @@ export default function Footer() {
             <p className="text-[12px] font-light leading-relaxed max-w-[200px]" style={{ color: "var(--fg-faint)" }}>
               Built for businesses that want to grow — not just look good.
             </p>
+            <HostingerPartner compact />
             <div className="flex gap-3 mt-5">
               {[
                 { id: "in", href: "https://linkedin.com" },
                 { id: "tw", href: "https://twitter.com" },
                 { id: "ig", href: "https://instagram.com/nddstudio.in" },
-                { id: "gh", href: "https://github.com" },
+                { id: "gh", href: "https://github.com/B-Mustafa" },
               ].map((s) => (
                 <a
                   key={s.id}

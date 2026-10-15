@@ -10,6 +10,18 @@ interface Rule {
 
 const RULES: Rule[] = [
   {
+    keywords: ["hostinger", "hosting", "coupon", "referral", "mustafa0203", "domain"],
+    response: "NDD.Studio is a Hostinger Partner. Explore hosting here:\nhttps://www.hostinger.com/in?REFERRALCODE=Mustafa0203\n\nCoupon code: MUSTAFA0203\nEligibility and any discount are confirmed by Hostinger at checkout. We may earn a commission through this referral link.\n\nNeed help planning your website? Tell us what you want to build, or visit /contact.",
+  },
+  {
+    keywords: ["github", "git hub", "source code", "repositories"],
+    response: "You can explore Mustafa's GitHub here:\nhttps://github.com/B-Mustafa\n\nFor client projects, see /work. Want to discuss something similar? Visit /contact.",
+  },
+  {
+    keywords: ["whatsapp", "email", "phone", "human", "person", "speak to someone"],
+    response: "Talk directly with NDD.Studio:\n\nWhatsApp: https://wa.me/919106579181\nEmail: hello@nddstudio.in\nProject enquiry: /contact\n\nShare what you want to build, your budget range, and your ideal launch date so we can discuss the next step.",
+  },
+  {
     keywords: ["hello", "hi", "hey", "good morning", "good evening", "namaste", "hii", "helo"],
     response: "Hey! 👋 Great to have you here. I can help with questions about our services, pricing, timelines, or how to get started. What would you like to know?",
   },
@@ -75,7 +87,7 @@ const RULES: Rule[] = [
   },
   {
     keywords: ["guarantee", "refund", "satisfaction", "promise", "quality"],
-    response: "We don't offer refunds — instead, we do the work right the first time. 98% client satisfaction, fixed scope, and we don't start until you approve the design direction.",
+    response: "Scope, revisions, payment terms, and any cancellation or refund terms should be confirmed in your project proposal. Please contact us at /contact to discuss your requirements before booking.",
   },
   {
     keywords: ["start", "begin", "get started", "next step", "how to", "process"],
@@ -91,25 +103,33 @@ const FALLBACK =
   "Sorry, I can't answer that right now. Please contact us at hello@nddstudio.in or fill out the form at /contact, and our team will reply back soon.";
 
 function findResponse(message: string): string {
-  const lower = message.toLowerCase();
+  const lower = message.toLowerCase().replace(/[^\p{L}\p{N}₹]+/gu, " ").trim();
+  const padded = ` ${lower} `;
+  let best: Rule | undefined;
+  let bestScore = 0;
   for (const rule of RULES) {
-    if (rule.keywords.some((kw) => lower.includes(kw))) {
-      return rule.response;
+    const score = rule.keywords.reduce((total, keyword) => {
+      const normalized = keyword.toLowerCase().replace(/[^\p{L}\p{N}₹]+/gu, " ").trim();
+      return padded.includes(` ${normalized} `)
+        ? total + normalized.split(" ").length * 10 + Math.min(normalized.length, 9)
+        : total;
+    }, 0);
+    if (score > bestScore) {
+      best = rule;
+      bestScore = score;
     }
   }
-  return FALLBACK;
+  return best?.response ?? FALLBACK;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
     const lastMessage = messages?.[messages.length - 1];
-    if (!lastMessage?.content) {
-      return NextResponse.json({ message: FALLBACK });
+    if (!Array.isArray(messages) || lastMessage?.role !== "user" || typeof lastMessage.content !== "string" || !lastMessage.content.trim() || lastMessage.content.length > 2000) {
+      return NextResponse.json({ message: "Please send a question of up to 2,000 characters." }, { status: 400 });
     }
     const response = findResponse(lastMessage.content);
-    // Small artificial delay so it doesn't feel instant-robotic
-    await new Promise((r) => setTimeout(r, 400 + Math.random() * 300));
     return NextResponse.json({ message: response });
   } catch {
     return NextResponse.json({ message: FALLBACK });

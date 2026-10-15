@@ -12,8 +12,19 @@ const SUGGESTIONS = [
   "What services do you offer?",
   "How much does a website cost?",
   "How fast can you deliver?",
-  "Do you work outside India?",
+  "Hostinger hosting & coupon",
 ];
+
+function MessageContent({ content }: { content: string }) {
+  const parts = content.split(/(https:\/\/[^\s]+|hello@nddstudio\.in|\/(?:contact|about|work|services)\b)/g);
+  return <>{parts.map((part, index) => {
+    const isExternal = part.startsWith("https://");
+    const isEmail = part === "hello@nddstudio.in";
+    if (!isExternal && !isEmail && !/^\/(contact|about|work|services)$/.test(part)) return part;
+    const sponsored = part.startsWith("https://www.hostinger.com/");
+    return <a key={index} href={isEmail ? `mailto:${part}` : part} target={isExternal ? "_blank" : undefined} rel={isExternal ? `${sponsored ? "sponsored " : ""}noopener noreferrer` : undefined} className="underline underline-offset-2 break-words font-medium">{part}</a>;
+  })}</>;
+}
 
 export default function Chatbot() {
   const [open, setOpen]           = useState(false);
@@ -27,6 +38,19 @@ export default function Chatbot() {
   const scrollRef   = useRef<HTMLDivElement>(null);
   const inputRef    = useRef<HTMLInputElement>(null);
   const hasSentRef  = useRef(false);
+  const sendingRef = useRef(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        btnRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
 
   // Greeting on first open
   useEffect(() => {
@@ -34,7 +58,7 @@ export default function Chatbot() {
       setMessages([
         {
           role: "assistant",
-          content: "Hey! 👋 I'm the NDD.Studio assistant. Ask me anything about our services, pricing, or how we work — I'll keep it short and honest.",
+          content: "Hi! 👋 I'm NDD.Studio's automated guide. I can help with services, starting prices, timelines, and Hostinger hosting.\n\nWhat are you looking to build? You can also talk directly with Mustafa using the buttons below.",
         },
       ]);
     }
@@ -50,7 +74,8 @@ export default function Chatbot() {
         { opacity: 0, scale: 0.92, y: 16 },
         { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.5)" }
       );
-      setTimeout(() => inputRef.current?.focus(), 320);
+      const focusTimer = setTimeout(() => inputRef.current?.focus(), 320);
+      return () => clearTimeout(focusTimer);
     } else {
       gsap.to(panelRef.current, {
         opacity: 0, scale: 0.92, y: 16, duration: 0.2, ease: "power2.in",
@@ -76,7 +101,8 @@ export default function Chatbot() {
 
   const send = async (text?: string) => {
     const msg = (text ?? input).trim();
-    if (!msg || loading) return;
+    if (!msg || sendingRef.current || msg.length > 2000) return;
+    sendingRef.current = true;
 
     setInput("");
     hasSentRef.current = true;
@@ -90,10 +116,13 @@ export default function Chatbot() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          messages: newMessages.slice(-20).map((m) => ({ role: m.role, content: m.content })),
         }),
+        signal: AbortSignal.timeout(15000),
       });
+      if (!res.ok) throw new Error("Chat request failed");
       const data = await res.json();
+      if (typeof data.message !== "string") throw new Error("Invalid chat response");
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
     } catch {
       setMessages((prev) => [
@@ -101,12 +130,13 @@ export default function Chatbot() {
         { role: "assistant", content: "Something went wrong. Please email hello@nddstudio.in directly." },
       ]);
     } finally {
+      sendingRef.current = false;
       setLoading(false);
     }
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); }
   };
 
   return (
@@ -115,10 +145,13 @@ export default function Chatbot() {
       {open && (
         <div
           ref={panelRef}
-          className="fixed bottom-24 right-5 z-[9998] flex flex-col rounded-2xl overflow-hidden shadow-2xl"
+          id="studio-chat"
+          role="dialog"
+          aria-labelledby="studio-chat-title"
+          className="fixed bottom-24 right-3 sm:right-5 z-[9998] flex flex-col rounded-2xl overflow-hidden shadow-2xl"
           style={{
-            width: "min(380px, calc(100vw - 24px))",
-            height: "min(520px, calc(100vh - 120px))",
+            width: "min(410px, calc(100vw - 24px))",
+            height: "min(600px, calc(100dvh - 120px))",
             background: "var(--bg-primary)",
             border: "1px solid var(--border)",
           }}
@@ -139,16 +172,16 @@ export default function Chatbot() {
                 </svg>
               </div>
               <div>
-                <div className="font-syne font-extrabold text-[13px] tracking-tight" style={{ color: "var(--fg-primary)" }}>
-                  NDD.Studio
+                <div id="studio-chat-title" className="font-syne font-extrabold text-[14px] tracking-tight" style={{ color: "var(--fg-primary)" }}>
+                  Let&apos;s build something.
                 </div>
                 <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--fg-faint)" }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  Online · replies instantly
+                  NDD.Studio · Automated guide
                 </div>
               </div>
             </div>
-            <button onClick={() => setOpen(false)}
+            <button aria-label="Close chat" onClick={() => { setOpen(false); btnRef.current?.focus(); }}
               className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
               style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border)" }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
@@ -159,7 +192,7 @@ export default function Chatbot() {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
+          <div ref={scrollRef} role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions" data-lenis-prevent className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 flex flex-col gap-3"
             style={{ scrollbarWidth: "thin", scrollbarColor: "var(--border) transparent" }}>
             {messages.map((msg, i) => (
               <div key={i} className={`chat-bubble flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -181,9 +214,9 @@ export default function Chatbot() {
                     background: msg.role === "user" ? "var(--orange)" : "var(--bg-tertiary)",
                     border: msg.role === "user" ? "none" : "1px solid var(--border)",
                   }}>
-                  <p className="text-[12px] leading-relaxed whitespace-pre-wrap"
+                  <p className="text-[13px] leading-relaxed whitespace-pre-wrap break-words"
                     style={{ color: msg.role === "user" ? "white" : "var(--fg-secondary)", fontWeight: 300 }}>
-                    {msg.content}
+                    {msg.role === "assistant" ? <MessageContent content={msg.content} /> : msg.content}
                   </p>
                 </div>
               </div>
@@ -218,7 +251,7 @@ export default function Chatbot() {
           {!hasSentRef.current && (
             <div className="px-4 pb-2 flex flex-wrap gap-1.5 flex-shrink-0">
               {SUGGESTIONS.map((s) => (
-                <button key={s} onClick={() => send(s)}
+                <button key={s} disabled={loading} onClick={() => send(s)}
                   className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg transition-all hover:scale-[1.03]"
                   style={{ background: "var(--orange-bg)", border: "1px solid var(--orange-border)", color: "var(--orange)" }}>
                   {s}
@@ -229,20 +262,27 @@ export default function Chatbot() {
 
           {/* Input */}
           <div className="px-4 pb-4 pt-2 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
+            <div className="flex gap-2 mb-3 mt-1">
+              <a href="/contact" className="flex-1 text-center text-xs font-medium rounded-lg px-3 py-2" style={{ background: "var(--orange-bg)", color: "var(--orange)", border: "1px solid var(--orange-border)" }}>Request a quote</a>
+              <a href="https://wa.me/919106579181" target="_blank" rel="noopener noreferrer" className="flex-1 text-center text-xs font-medium rounded-lg px-3 py-2" style={{ background: "var(--bg-tertiary)", color: "var(--fg-primary)", border: "1px solid var(--border)" }}>WhatsApp Mustafa ↗</a>
+            </div>
             <div className="flex items-center gap-2 rounded-xl px-3 py-2"
               style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border)" }}>
               <input
                 ref={inputRef}
                 type="text"
+                aria-label="Your question"
+                maxLength={2000}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKey}
-                placeholder="Ask anything…"
+                placeholder="Ask about your next project…"
                 disabled={loading}
                 className="flex-1 bg-transparent outline-none text-[12px] font-light placeholder:text-[var(--fg-faint)]"
                 style={{ color: "var(--fg-primary)", minWidth: 0 }}
               />
               <button
+                aria-label="Send message"
                 onClick={() => send()}
                 disabled={!input.trim() || loading}
                 className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all"
@@ -260,8 +300,8 @@ export default function Chatbot() {
                 </svg>
               </button>
             </div>
-            <p className="text-[9px] text-center mt-2" style={{ color: "var(--fg-faintest, rgba(255,255,255,0.12))" }}>
-              AI assistant · For urgent matters email hello@nddstudio.in
+            <p className="text-[10px] text-center mt-2" style={{ color: "var(--fg-muted)" }}>
+              Automated answers · Final scope and pricing confirmed by our team
             </p>
           </div>
         </div>
@@ -274,6 +314,8 @@ export default function Chatbot() {
         className="fixed bottom-5 right-5 z-[9999] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
         style={{ background: "var(--orange)", boxShadow: open ? "0 0 0 4px rgba(232,99,10,0.2)" : "0 8px 32px rgba(232,99,10,0.4)" }}
         aria-label={open ? "Close chat" : "Open chat"}
+        aria-expanded={open}
+        aria-controls="studio-chat"
       >
         {/* Notification dot */}
         {showDot && !open && (

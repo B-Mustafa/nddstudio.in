@@ -7,6 +7,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Cursor from "@/components/Cursor";
+import HostingerPartner from "@/components/HostingerPartner";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -505,6 +506,7 @@ export default function ServicesClient() {
           </section>
 
           {/* ── SERVICE DETAIL (tabbed) ───────────────────────────────────── */}
+          <HostingerPartner />
           <section id="services-detail" className="py-24 lg:py-32" style={{ background: "var(--bg-primary)" }}>
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
               <div className="deepdive-header mb-12">

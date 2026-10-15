@@ -1,0 +1,25 @@
+.lightBadge {
+  display: block;
+}
+
+.darkBadge {
+  display: none;
+}
+
+:global([data-theme="light"]) .lightBadge {
+  display: none;
+}
+
+:global([data-theme="light"]) .darkBadge {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :global(:root:not([data-theme])) .lightBadge {
+    display: none;
+  }
+
+  :global(:root:not([data-theme])) .darkBadge {
+    display: block;
+  }
+}
